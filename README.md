@@ -19,7 +19,7 @@ This project is a **maze generator and solver** written in C++. It uses recursiv
 ### Installation
 1. Clone the repository:
    ```bash
-   git clone https://github.com/your-username/maze-generator-solver.git
+   git clone https://github.com/sibghatullah-pk/maze-generator-solver.git
    cd maze-generator-solver
    ```
 2. Compile the program:
