@@ -4,11 +4,10 @@
 #include <queue>
 #include <random>
 #include <algorithm>
+#include <ctime>
 
 using namespace std;
-
-#define WALL '#'n
-      
+#define WALL '#'
 #define PATH ' '
 #define START 'S'
 #define END 'E'
@@ -29,42 +28,61 @@ private:
     mt19937 rng;
 
 public:
-    Maze(int r, int c) : rows(r), cols(c), rng(random_device{}()) {
-        grid.resize(rows, vector<char>(cols, WALL));
-        generateMaze();
+  Maze(int r, int c) {
+    rows = r;
+    cols = c;
+    rng = mt19937(time(0)); // Initialize the RNG with the current time
+
+    // Resize the grid to the given dimensions and fill it with walls
+    grid.resize(rows);
+    for (int i = 0; i < rows; ++i) {
+        grid[i].resize(cols, WALL);
     }
 
-    void generateMaze() {
-        stack<Cell> s;
-        s.push({1, 1});
-        grid[1][1] = PATH;
+    generateMaze(); // Generate the maze after the grid is set up
+}
 
-        while (!s.empty()) {
-            Cell current = s.top();
-            s.pop();
+void generateMaze() {
+    stack<Cell> cellStack;
+    cellStack.push({1, 1}); // Start at the initial point (1, 1)
+    grid[1][1] = PATH; // Mark the start position as a path
 
-            vector<int> directions = {0, 1, 2, 3};
-            shuffle(directions.begin(), directions.end(), rng);
+    while (!cellStack.empty()) {
+        // Get the current cell
+        Cell currentCell = cellStack.top();
+        cellStack.pop();
 
-            for (int i : directions) {
-                int nx = current.x + dx[i] * 2;
-                int ny = current.y + dy[i] * 2;
+        // Shuffle the possible directions (up, down, left, right)
+        vector<int> possibleDirections = {0, 1, 2, 3};
+        shuffle(possibleDirections.begin(), possibleDirections.end(), rng);
 
-                if (isValid(nx, ny) && grid[nx][ny] == WALL) {
-                    grid[current.x + dx[i]][current.y + dy[i]] = PATH;
-                    grid[nx][ny] = PATH;
-                    s.push({nx, ny});
-                }
+        for (int direction : possibleDirections) {
+            int nextX = currentCell.x + dx[direction] * 2;
+            int nextY = currentCell.y + dy[direction] * 2;
+
+            // Check if the next cell is within bounds and is still a wall
+            if (isValid(nextX, nextY) && grid[nextX][nextY] == WALL) {
+                // Create a path by removing the wall between current and next cell
+                grid[currentCell.x + dx[direction]][currentCell.y + dy[direction]] = PATH;
+                grid[nextX][nextY] = PATH;
+
+                // Push the next cell onto the stack
+                cellStack.push({nextX, nextY});
             }
         }
-
-        grid[1][1] = START;
-        grid[rows - 2][cols - 2] = END;
     }
 
-    bool isValid(int x, int y) {
-        return x > 0 && x < rows - 1 && y > 0 && y < cols - 1;
-    }
+    // Mark start and end points
+    grid[1][1] = START;
+    grid[rows - 2][cols - 2] = END;
+}
+
+   bool isValid(int x, int y) {
+    if (x <= 0 || x >= rows - 1) return false;  // Check if x is outside the valid range
+    if (y <= 0 || y >= cols - 1) return false;  // Check if y is outside the valid range
+    return true;  // If both conditions are valid, return true
+}
+
 
     void addObstacle(int x, int y) {
         if (isValid(x, y) && grid[x][y] == PATH) {
@@ -73,53 +91,56 @@ public:
             cout << "Invalid position or already a wall.\n";
         }
     }
+bool solveMaze() {
+    queue<Cell> pathQueue;  // Queue to explore the maze
+    pathQueue.push({1, 1});  // Start from the initial position
 
-    bool solveMaze() {
-        queue<Cell> q;
-        q.push({1, 1});
+    vector<vector<bool>> visitedCells(rows, vector<bool>(cols, false));  // Track visited cells
+    vector<vector<Cell>> parentCell(rows, vector<Cell>(cols, {-1, -1}));  // Store the parent of each cell
 
-        vector<vector<bool>> visited(rows, vector<bool>(cols, false));
-        vector<vector<Cell>> parent(rows, vector<Cell>(cols, {-1, -1}));
+    visitedCells[1][1] = true;  // Mark the start cell as visited
 
-        visited[1][1] = true;
+    while (!pathQueue.empty()) {
+        Cell currentCell = pathQueue.front();  // Get the current cell from the queue
+        pathQueue.pop();  // Remove it from the queue
 
-        while (!q.empty()) {
-            Cell current = q.front();
-            q.pop();
-
-            if (grid[current.x][current.y] == END) {
-                // Trace back the path from END to START
-                Cell path = current;
-                while (parent[path.x][path.y].x != -1) {
-                    grid[path.x][path.y] = VISITED;
-                    path = parent[path.x][path.y];
-                }
-                grid[1][1] = START;
-                return true;
+        if (grid[currentCell.x][currentCell.y] == END) {
+            // If we reach the END, trace the path back to the start
+            Cell backtrackCell = currentCell;
+            while (parentCell[backtrackCell.x][backtrackCell.y].x != -1) {
+                grid[backtrackCell.x][backtrackCell.y] = VISITED;  // Mark the visited path
+                backtrackCell = parentCell[backtrackCell.x][backtrackCell.y];  // Move to the parent
             }
+            grid[1][1] = START;  // Ensure the start position is marked correctly
+            return true;  // Return true when the path is found
+        }
 
-            for (int i = 0; i < 4; ++i) {
-                int nx = current.x + dx[i];
-                int ny = current.y + dy[i];
+        // Explore neighboring cells (up, down, left, right)
+        for (int direction = 0; direction < 4; ++direction) {
+            int newX = currentCell.x + dx[direction];
+            int newY = currentCell.y + dy[direction];
 
-                if (isValid(nx, ny) && !visited[nx][ny] && (grid[nx][ny] == PATH || grid[nx][ny] == END)) {
-                    visited[nx][ny] = true;
-                    parent[nx][ny] = current;
-                    q.push({nx, ny});
-                }
+            // Check if the neighboring cell is valid, unvisited, and is either a PATH or the END
+            if (isValid(newX, newY) && !visitedCells[newX][newY] && (grid[newX][newY] == PATH || grid[newX][newY] == END)) {
+                visitedCells[newX][newY] = true;  // Mark the cell as visited
+                parentCell[newX][newY] = currentCell;  // Set the parent for backtracking
+                pathQueue.push({newX, newY});  // Add the new cell to the queue for further exploration
             }
         }
-        return false;
     }
 
-    void display() {
-        for (const auto &row : grid) {
-            for (const auto &cell : row) {
-                cout << cell << ' ';
-            }
-            cout << '\n';
+    return false;  // If no solution is found, return false
+}
+
+   void display() {
+    for (int i = 0; i < rows; ++i) {
+        for (int j = 0; j < cols; ++j) {
+            cout << grid[i][j] << ' ';
         }
+        cout << '\n';
     }
+}
+
 };
 
 int main() {
