@@ -137,8 +137,20 @@ public:
 
     void display()
     {
+        // Print column indices at the top
+        cout <<"  "; // Offset for row numbers
+        for (int j = 0; j < cols; ++j)
+        {
+            cout << j % 10 << ' '; // Print column numbers (mod 10 for better readability)
+        }
+        cout << '\n';
+
         for (int i = 0; i < rows; ++i)
         {
+            // Print row index on the left side
+            cout << (i % 10) << " "; // Print row numbers (mod 10 for alignment)
+
+            // Print the maze content for each row
             for (int j = 0; j < cols; ++j)
             {
                 cout << grid[i][j] << ' ';
