@@ -28,7 +28,7 @@ private:
     int rows, cols;
     vector<vector<char>> grid;
     mt19937 rng;
-
+    //mersennne twister 
 public:
     Maze(int r, int c)
     {
