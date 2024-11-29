@@ -40,26 +40,26 @@ This project is a **maze generator and solver** written in C++. It uses recursiv
 ### Example Output:
 ```
 Generated Maze:
-# # # # # # # # # # # # # # # # # # # #
-# S     #     #     #         #       #
-# ##### # ### # ### ##### ##### ##### #
-#       #   #     # #     #   #     # #
-# ########### ### # # ### ### # ### # #
-#     #       #   #   #   #   # #   # #
+ 0 1 2 3 4 5 6 7 8 9 
+0 S     #     #     #         #       #
+1 ##### # ### # ### ##### ##### ##### #
+2       #   #     # #     #   #     # #
+3 ########### ### # # ### ### # ### # #
+4     #       #   #   #   #   # #   # #
 ##### # ##### ### ### ##### ### # ### #
-#   # # #     #     # #     # # # #   #
-# ### ### ### ####### ### ### # ### ###
-#   #   #   #     #     # #   #     # #
+5   # # #     #     # #     # # # #   #
+6 ### ### ### ####### ### ### # ### ###
+7   #   #   #     #     # #   #     # #
 ### ##### ### ##### ### ### ##### ### #
 # #     #   #   #   #   #   # #     # #
 # ### ##### ### ##### ### # ### ##### #
-# #     #     #     # #   #   #     # #
+8 #     #     #     # #   #   #     # #
 # # ##### ##### ### ### ##### ##### ###
-# # #       #   #     #   #       #   #
+9 # #       #   #     #   #       #   #
 # ### ### ### ######### ######### ### #
 # # #   #   #         #       # #   # #
 # # ### ##### ### ### ##### ### ### # #
-#       #     #   #       #     # E   #
+0       #     #   #       #     # E   #
 # # # # # # # # # # # # # # # # # # # #
 Would you like to add obstacles? (y/n):
 ```
@@ -87,4 +87,3 @@ Contributions are welcome! Please fork the repository and submit a pull request 
 
 ---
 
-You can adjust the **License** and **Contributing** sections based on your preferences. Would you like me to draft a specific **MIT License** file for you?
