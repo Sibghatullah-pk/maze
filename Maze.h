@@ -15,7 +15,7 @@ public:
     bool solveMazeDFS(int startX, int startY);
 
 private:
-    enum CellType { WALL = '#', PATH = ' ', START = 'S', END = 'E', VISITED = '.' };
+    enum CellType { WALL = '#', PATH = ' ', START = 'S', END = 'E', VISITED = '.' };// anum are used for better understandings and for avoiding unwanted errors that can happen in case of hard coded letters like # or S or anything 
     struct Cell { int x, y; };
 
     int rows, cols;
