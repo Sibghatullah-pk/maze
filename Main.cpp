@@ -1,38 +1,48 @@
 #include <iostream>
 #include "Maze.h"
 
-using namespace std;
+/*
 
-int main() {
+g++ -o maze main.cpp maze.cpp
+./maze
+c
+*/
+int main()
+{
     int rows = 21, cols = 21;
     Maze maze(rows, cols);
 
-    cout << "Generated Maze:\n";
+    std::cout << "Generated Maze:\n";
     maze.display();
 
     char choice;
-    cout << "\nAdd obstacles? (y/n): ";
-    cin >> choice;
+    std::cout << "\nWould you like to add obstacles? (y/n): ";
+    std::cin >> choice;
 
-    while (choice == 'y') {
+    while (choice == 'y')
+    {
         int x, y;
-        cout << "Enter obstacle coordinates (row col): ";
-        cin >> x >> y;
+        std::cout << "Enter obstacle coordinates (row col): ";
+        std::cin >> x >> y;
         maze.addObstacle(x, y);
 
-        cout << "\nUpdated Maze:\n";
+        std::cout << "\nUpdated Maze:\n";
         maze.display();
 
-        cout << "\nAdd more obstacles? (y/n): ";
-        cin >> choice;
+        std::cout << "\nAdd more obstacles? (y/n): ";
+        std::cin >> choice;
     }
 
-    cout << "\nSolving Maze...\n";
-    if (maze.solveMazeDFS(1, 1)) {
-        cout << "\nSolved Maze:\n";
+    std::cout << "\nSolving Maze...\n";
+
+    if (maze.solveMazeDFS(1, 1))
+    {
+        std::cout << "\nSolved Maze:\n";
         maze.display();
-    } else {
-        cout << "\nNo solution found!\n";
+    }
+    else
+    {
+        std::cout << "\nNo solution found!\n";
     }
 
     return 0;

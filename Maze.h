@@ -4,26 +4,38 @@
 #include <vector>
 #include <stack>
 #include <random>
-#include <string>
-using namespace std;
+#include <iostream>
 
-class Maze {
-public:
-    Maze(int rows, int cols);
-    void display() const;
-    void addObstacle(int x, int y);
-    bool solveMazeDFS(int startX, int startY);
+// Direction vectors (up, down, left, right)
+const int dx[] = {-1, 1, 0, 0};
+const int dy[] = {0, 0, -1, 1};
 
-private:
-    enum CellType { WALL = '#', PATH = ' ', START = 'S', END = 'E', VISITED = '.' };// anum are used for better understandings and for avoiding unwanted errors that can happen in case of hard coded letters like # or S or anything 
-    struct Cell { int x, y; };
+#define WALL '#'
+#define PATH ' '
+#define START 'S'
+#define END 'E'
+#define VISITED '.'
 
-    int rows, cols;
-    vector<std::vector<char>> grid;
-    mt19937 rng;
-
-    void generateMaze();
-    bool isValid(int x, int y) const;
+struct Cell
+{
+    int x, y;
 };
 
-#endif
+class Maze
+{
+private:
+    int rows, cols;
+    std::vector<std::vector<char>> grid;
+    std::mt19937 rng;
+
+    bool isValid(int x, int y);
+
+public:
+    Maze(int r, int c);
+    void generateMaze();
+    void addObstacle(int x, int y);
+    bool solveMazeDFS(int x, int y);
+    void display();
+};
+
+#endif // MAZE_H
